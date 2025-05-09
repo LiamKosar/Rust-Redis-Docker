@@ -9,18 +9,25 @@ services:
 
   rust-app:
     build: ./rust-app
-    container_name: rust-app
     depends_on:
       - redis
     environment:
       - REDIS_HOST=redis
+      - RUN_MODE=app
     command: ./target/release/rust-app
 
   rust-worker:
-    build: ./rust-worker
-    container_name: rust-worker
+    build: ./rust-app
     depends_on:
       - redis
     environment:
       - REDIS_HOST=redis
-    command: ./target/release/rust-worker
+      - RUN_MODE=worker
+    command: ./target/release/rust-app
+    deploy:
+      mode: replicated
+      replicas: 1  # Run multiple instances of the worker
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 256M
