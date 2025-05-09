@@ -1,9 +1,23 @@
 use redis::Commands;
 
 fn main() {
-    let client = redis::Client::open("redis://redis/").unwrap();
-    let mut con = client.get_connection().unwrap();
+    let hi;
+    if let Ok(number) = fetch_an_integer() {
+        println!("The number is {}", number);
+        hi = number;
+    }
+    else {
+        println!("Oh no! Failure!");
+        hi = -1;
+    }
 
-    let pong: String = con.ping().unwrap();
-    println!("Response from Redis: {}", pong);
+    println!("The number is {}", hi);
+}
+
+fn fetch_an_integer() -> redis::RedisResult<isize> {
+    let client = redis::Client::open("redis://redis/")?;
+    let mut con = client.get_connection()?;
+
+    let _: () = con.set("my_key", 42)?;
+    con.get("my_key")
 }
