@@ -1,5 +1,8 @@
 use redis::Commands;
 use std::env;
+mod constants;
+use crate::constants::{APP_RUN_MODE, WORKER_RUN_MODE, REDIS_INSTANCE_NAME};
+
 
 fn main() {
 
@@ -7,8 +10,8 @@ fn main() {
     let run_mode = env::var("RUN_MODE").unwrap_or_else(|_| "unknown".to_string());
 
     match run_mode.as_str() {
-        "app" => run_app(),
-        "worker" => run_worker(),
+        APP_RUN_MODE => run_app(),
+        WORKER_RUN_MODE => run_worker(),
         _ => {
             eprintln!("Unknown mode. Set RUN_MODE to 'app' or 'worker'");
             std::process::exit(1);
@@ -31,7 +34,8 @@ fn run_worker() {
 }
 
 fn fetch_an_integer() -> redis::RedisResult<isize> {
-    let client = redis::Client::open("redis://redis/")?;
+
+    let client = redis::Client::open(format!("redis://{}/", REDIS_INSTANCE_NAME))?;
     let mut con = client.get_connection()?;
 
     let _: () = con.set("my_key", 42)?;
