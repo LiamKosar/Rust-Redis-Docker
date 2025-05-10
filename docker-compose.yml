@@ -6,6 +6,9 @@ services:
     container_name: redis
     ports:
       - "6379:6379"
+    command: redis-server --appendonly yes  # Enable AOF persistence
+    volumes:
+      - redis-data:/data  # Mount a volume for data persistence
 
   rust-app:
     build: ./rust-app
@@ -31,3 +34,5 @@ services:
         limits:
           cpus: '0.5'
           memory: 256M
+volumes:
+  redis-data:  # Define the volume

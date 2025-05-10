@@ -1,4 +1,5 @@
-use crate::constants::{QUEUE_NAME, REDIS_INSTANCE_NAME};
+use crate::constants::QUEUE_NAME;
+use crate::our_redis::get_redis_client;
 use redis::Commands;
 
 pub fn run_app() {
@@ -10,10 +11,13 @@ pub fn run_app() {
 }
 
 fn fetch_an_integer() -> redis::RedisResult<isize> {
-    let client = redis::Client::open(format!("redis://{}/", REDIS_INSTANCE_NAME))?;
-    let mut con = client.get_connection()?;
+    let mut con: redis::Connection = get_redis_client();
 
     // let _: () = con.set("my_key", 42)?;
-    // con.get("my_key")
-    con.lpush(QUEUE_NAME, 1)
+    // con.get("my_key")'
+    print!("MEOWWW");
+    let _: redis::RedisResult<isize> = con.rpush(QUEUE_NAME, 100);
+    let _: redis::RedisResult<isize> = con.rpush(QUEUE_NAME, 101);
+    let _: redis::RedisResult<isize> = con.rpush(QUEUE_NAME, 102);
+    con.rpush(QUEUE_NAME, 103)
 }

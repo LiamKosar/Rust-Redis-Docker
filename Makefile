@@ -6,6 +6,10 @@ up:
 up-non-detatched:
 	docker-compose up --build
 
+services:
+	docker-compose build rust-app
+	docker-compose build rust-worker
+
 down:
 	docker-compose down
 

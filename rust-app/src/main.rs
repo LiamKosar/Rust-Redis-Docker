@@ -2,9 +2,12 @@ use std::env;
 pub mod constants;
 
 mod app;
+mod our_redis;
+mod worker;
 
 use crate::app::run_app;
 use crate::constants::{APP_RUN_MODE, WORKER_RUN_MODE};
+use crate::worker::run_worker;
 
 fn main() {
     // Check environment variable
@@ -18,8 +21,4 @@ fn main() {
             std::process::exit(1);
         }
     }
-}
-
-fn run_worker() {
-    println!("IM A FUCKING WORKER")
 }
