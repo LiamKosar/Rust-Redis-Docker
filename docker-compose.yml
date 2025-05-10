@@ -29,7 +29,7 @@ services:
     command: ./target/release/rust-app
     deploy:
       mode: replicated
-      replicas: 1  # Run multiple instances of the worker
+      replicas: 3  # Run multiple instances of the worker
       resources:
         limits:
           cpus: '0.5'
