@@ -1,0 +1,20 @@
+# .pre-commit-config.yaml
+repos:
+  - repo: https://github.com/doublify/pre-commit-rust
+    rev: v1.0
+    hooks:
+      - id: fmt
+        name: fmt
+        description: Format files with rustfmt.
+        entry: bash -c 'cd rust-app && cargo fmt --'
+        language: system
+        types: [rust]
+        files: ^rust-app/
+      
+      - id: clippy
+        name: clippy
+        description: Run clippy on your Rust files.
+        entry: bash -c 'cd rust-app && cargo clippy -- -D warnings'
+        language: system
+        types: [rust]
+        files: ^rust-app/
