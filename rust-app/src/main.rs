@@ -1,8 +1,7 @@
 use std::env;
-pub mod config;
-
 mod app;
 mod celery;
+pub mod config;
 mod worker;
 
 use crate::app::run_app;
