@@ -1,20 +1,42 @@
-use redis::Commands;
-
-use crate::constants::QUEUE_NAME;
-use crate::our_redis::get_redis_client;
+use crate::celery::WorkerConnection;
+use crate::config::QUEUE_NAME;
+mod celery_settings;
+use crate::worker::celery_settings::BROKER_URL;
 
 pub fn run_worker() {
     println!("Worker running");
-    loop_over_queue();
+
+    let mut con: WorkerConnection;
+
+    match WorkerConnection::create_worker_connection(BROKER_URL) {
+        Ok(connection) => {
+            con = connection;
+        }
+        Err(e) => {
+            println!("There was an error fetching the worker connection: {}", e);
+            return;
+        }
+    }
+
+    loop_over_queue(&mut con);
 }
 
-fn loop_over_queue() {
-    let mut con: redis::Connection = get_redis_client();
+fn get_next_task(worker_connection: &mut WorkerConnection) -> Option<isize> {
+    match worker_connection.get_next_task(QUEUE_NAME) {
+        Ok(task) => task,
+        Err(e) => {
+            println!("There was an error fetching the task from the queue: {}", e);
+            None
+        }
+    }
+}
+
+fn loop_over_queue(worker_connection: &mut WorkerConnection) {
     let mut processed_count = 0;
     print!("AWOOGA");
     loop {
         // Try to pop a value (non-blocking)
-        let result: Option<isize> = con.lpop(QUEUE_NAME, None).unwrap();
+        let result: Option<isize> = get_next_task(worker_connection);
         match result {
             Some(value) => {
                 // Process the value

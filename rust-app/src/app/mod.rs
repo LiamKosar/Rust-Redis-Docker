@@ -1,6 +1,8 @@
-use crate::constants::QUEUE_NAME;
-use crate::our_redis::get_redis_client;
+use crate::celery::get_broker_connection;
+use crate::config::QUEUE_NAME;
 use redis::Commands;
+mod celery_settings;
+use crate::app::celery_settings::BROKER_URL;
 
 pub fn run_app() {
     println!("Rust App");
@@ -8,7 +10,7 @@ pub fn run_app() {
 }
 
 fn fetch_an_integer() {
-    let mut con: redis::Connection = get_redis_client();
+    let mut con: redis::Connection = get_broker_connection(BROKER_URL).unwrap();
 
     // let _: () = con.set("my_key", 42)?;
     // con.get("my_key")'

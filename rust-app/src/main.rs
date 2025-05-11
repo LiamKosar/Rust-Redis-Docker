@@ -1,12 +1,12 @@
 use std::env;
-pub mod constants;
+pub mod config;
 
 mod app;
-mod our_redis;
+mod celery;
 mod worker;
 
 use crate::app::run_app;
-use crate::constants::{APP_RUN_MODE, WORKER_RUN_MODE};
+use crate::config::{APP_RUN_MODE, WORKER_RUN_MODE};
 use crate::worker::run_worker;
 
 fn main() {
