@@ -7,4 +7,7 @@ pub enum CeleryError {
 
     #[error("Unable to fetch next task for reason: {0}")]
     TaskFetchError(String),
+
+    #[error("Unable to push next task for reason: {0}")]
+    TaskPushError(String),
 }

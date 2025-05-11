@@ -33,7 +33,6 @@ fn get_next_task(worker_connection: &mut WorkerConnection) -> Option<isize> {
 
 fn loop_over_queue(worker_connection: &mut WorkerConnection) {
     let mut processed_count = 0;
-    print!("AWOOGA");
     loop {
         // Try to pop a value (non-blocking)
         let result: Option<isize> = get_next_task(worker_connection);
