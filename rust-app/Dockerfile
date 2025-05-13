@@ -7,8 +7,8 @@ COPY Cargo.toml .
 COPY src/ ./src/
 
 # Explicitly copy the macro directory
-COPY celery-macros/src ./celery-macros/src/
-COPY celery-macros/Cargo.toml ./celery-macros
+COPY celerylib/src ./celerylib/src/
+COPY celerylib/Cargo.toml ./celerylib
 # Verify the structure
 # RUN ls -la
 # RUN ls -la celery-macros/src/cargo.toml

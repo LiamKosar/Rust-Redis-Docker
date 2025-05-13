@@ -1,7 +1,7 @@
 [workspace]
 members = [
     ".",
-    "celery-macros"
+    "celerylib"
 ]
 
 [package]
@@ -12,4 +12,4 @@ edition = "2021"
 [dependencies]
 redis = "0.31"
 thiserror = "2.0.12"
-celery-macros = { path = "./celery-macros" }
+celerylib = { path = "./celerylib" }
