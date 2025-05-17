@@ -1,3 +1,9 @@
+[workspace]
+members = [
+    ".",
+    "celerylib"
+]
+
 [package]
 name = "rust-app"
 version = "0.1.0"
@@ -6,3 +12,4 @@ edition = "2021"
 [dependencies]
 redis = "0.31"
 thiserror = "2.0.12"
+celerylib = { path = "./celerylib" }
