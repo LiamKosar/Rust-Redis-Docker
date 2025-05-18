@@ -15,5 +15,11 @@ COPY celerylib/Cargo.toml ./celerylib
 
 RUN cargo build --release
 
+# Create output directory
+RUN mkdir -p /app/output
+
+# Set volume for output
+VOLUME ["/app/output"]
+
 # Use the absolute path in CMD
 CMD ["/app/target/release/rust-app"]

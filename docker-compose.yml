@@ -34,5 +34,8 @@ services:
         limits:
           cpus: '0.5'
           memory: 256M
+    volumes:
+      - ./output:/app/output  # Mount output directory
+      
 volumes:
   redis-data:  # Define the volume
