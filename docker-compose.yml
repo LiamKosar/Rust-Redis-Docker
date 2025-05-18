@@ -14,6 +14,8 @@ services:
     build: ./rust-app
     depends_on:
       - redis
+    env_file:
+      - .env
     environment:
       - REDIS_HOST=redis
       - RUN_MODE=app
@@ -23,6 +25,8 @@ services:
     build: ./rust-app
     depends_on:
       - redis
+    env_file:
+      - .env
     environment:
       - REDIS_HOST=redis
       - RUN_MODE=worker
@@ -36,6 +40,6 @@ services:
           memory: 256M
     volumes:
       - ./output:/app/output  # Mount output directory
-      
+
 volumes:
   redis-data:  # Define the volume

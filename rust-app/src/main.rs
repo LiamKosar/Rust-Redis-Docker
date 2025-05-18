@@ -1,50 +1,40 @@
 use std::env;
 
 pub mod config;
+pub mod celeryinterface;
+
+
+
 use crate::config::{APP_RUN_MODE, WORKER_RUN_MODE};
-use celerylib::{Celery, Task, TaskError, TaskResult, TaskSuccess};
+use celerylib::{Task, TaskResult, TaskSuccess};
 use serde::{Serialize, Deserialize};
-use once_cell::sync::Lazy;
-use std::sync::Mutex;
-
-
-use image::{ImageBuffer, RgbImage, Rgb};
+use image::{ImageBuffer, Rgb};
 use rayon::prelude::*;
 use std::time::Instant;
 use std::path::Path;
 use std::fs;
-
-pub static GLOBAL_CELERY: Lazy<Mutex<Celery>> =
-    Lazy::new(|| Mutex::new(Celery::create_celery("redis://redis/").unwrap()));
+use celeryinterface::{push_task, register_task, run_worker};
 
 fn main() {
     // Check environment variable
     let run_mode = env::var("RUN_MODE").unwrap_or_else(|_| "unknown".to_string());
 
-    let mut celery = GLOBAL_CELERY.lock().unwrap();
-    // celery.register_task::<i32, CoolTask>();
-    // celery.register_task::<Vec<i32>, HellaFib>();
-    celery.register_task::<mandlebrot, MandleBrot>();
+    register_task::<mandlebrot, MandleBrot>();
     match run_mode.as_str() {
         APP_RUN_MODE => {
-            // for _ in 0..100 {
-            //     celery
-            //         .push_task::<Vec<i32>, HellaFib>(vec![42, 42, 42, 42, 42])
-            //         .unwrap();
-            // }    
-            fs::create_dir_all("output").unwrap();
+            fs::create_dir_all("output").unwrap();               
 
-                            celery
-                    .push_task::<mandlebrot, MandleBrot>(mandlebrot{width: 5000, height: 5000, max_iterations: 1000, output_path: "output/mandelbrot1.png".to_string() })
-                    .unwrap();
-                celery
-                .push_task::<mandlebrot, MandleBrot>(mandlebrot{width: 6000, height: 5000, max_iterations: 10000, output_path: "output/mandelbrot2.png".to_string() })
-                .unwrap();
-            celery
-            .push_task::<mandlebrot, MandleBrot>(mandlebrot{width: 500, height: 500, max_iterations: 10000, output_path: "output/mandelbrot3.png".to_string() })
-            .unwrap();
+            for _ in 0..100 {
+                push_task::<i32, CoolTask>(42);
+            }
+
+            register_task::<mandlebrot, MandleBrot>();
+
+            push_task::<mandlebrot, MandleBrot>(mandlebrot{width: 10000, height: 10000, max_iterations: 10000, output_path: "output/mandelbrot1.png".to_string() });    
+            // push_task::<mandlebrot, MandleBrot>(mandlebrot{width: 6000, height: 5000, max_iterations: 10000, output_path: "output/mandelbrot2.png".to_string() });
+            // push_task::<mandlebrot, MandleBrot>(mandlebrot{width: 500, height: 500, max_iterations: 10000, output_path: "output/mandelbrot3.png".to_string() });
         }
-        WORKER_RUN_MODE => celery.run_worker(),
+        WORKER_RUN_MODE => run_worker(),
         _ => {
             eprintln!("Unknown mode. Set RUN_MODE to 'app' or 'worker'");
             std::process::exit(1);
